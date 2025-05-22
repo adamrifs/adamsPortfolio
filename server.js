@@ -3,6 +3,7 @@ const cors = require('cors')
 const dotenv = require('dotenv')
 const connectDB = require('./Config/db')
 const projectRoutes = require('./Routes/projectRoutes.js')
+const adminRoutes = require('./Routes/adminRoutes.js')
 dotenv.config()
 
 const app = express()
@@ -14,6 +15,7 @@ connectDB()
 
 
 app.use('/api/projects', projectRoutes)
+app.use('/api/admin', adminRoutes)
 
 app.listen(port, () => {
     console.log(`server running succesfull on ${port}`)

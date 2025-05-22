@@ -1,5 +1,6 @@
 const project = require("../Models/projectSchema")
 const cloudinary = require('../Config/cloudinary.js')
+
 const addProject = async (req, res) => {
     try {
         const { name, description, link } = req.body
@@ -29,6 +30,7 @@ const addProject = async (req, res) => {
         res.status(500).json({ message: 'error occured on addProject' })
     }
 }
+
 const getProject = async (req, res) => {
     try {
         const listProject = await project.find()
@@ -38,4 +40,5 @@ const getProject = async (req, res) => {
         res.status(500).json({ message: 'error occured on getProject' })
     }
 }
+
 module.exports = { addProject, getProject }
