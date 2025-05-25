@@ -49,4 +49,13 @@ const adminLogin = async (req, res) => {
         res.status(500).json({ message: "error occured on adminLogin" })
     }
 }
-module.exports = { adminRegister, adminLogin }
+const adminLogout = async (req, res) => {
+    try {
+        res.cookie('jwt', "", { maxAge: 0 })
+        res.status(200).json({ message: 'logout succesfull' })
+    } catch (error) {
+        console.log(error, 'error occured on adminlogout')
+        res.status(500).json({ message: "error occured on logout" })
+    }
+}
+module.exports = { adminRegister, adminLogin, adminLogout }
