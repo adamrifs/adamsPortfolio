@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs')
 
 const adminRegister = async (req, res) => {
     try {
-        const { name, email, password } = req.body
+        const { email, password } = req.body
         if (!email || !password) {
             return res.status(500).json({ message: "all fields required" })
         }
@@ -14,7 +14,6 @@ const adminRegister = async (req, res) => {
         }
         const hashPassword = await bcrypt.hash(password, 10)
         const newAdmin = new admin({
-            name,
             email,
             password: hashPassword
         })
@@ -35,16 +34,16 @@ const adminLogin = async (req, res) => {
         if (!email || !password) {
             return res.status(500).json({ message: "all fields required" })
         }
-        const admin = await admin.findOne({ email })
-        if (!admin) {
+        const Admin = await admin.findOne({ email })
+        if (!Admin) {
             res.status(500).json({ message: "admin not found" })
         }
-        const comparePassword = await bcrypt.compare(password, admin.password)
+        const comparePassword = await bcrypt.compare(password, Admin.password)
         if (!comparePassword) {
             return res.status(500).json({ message: 'password not match' })
         }
-        const token = generateToken(admin._id, res)
-        res.status(200).json({ message: "Login succesfull", email: admin.email, token })
+        const token = generateToken(Admin._id, res)
+        res.status(200).json({ message: "Login succesfull", email: Admin.email, token })
     } catch (error) {
         console.log(error, 'error occured on adminlogin')
         res.status(500).json({ message: "error occured on adminLogin" })
