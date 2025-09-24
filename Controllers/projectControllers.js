@@ -41,4 +41,17 @@ const getProject = async (req, res) => {
     }
 }
 
-module.exports = { addProject, getProject }
+const deleteProject = async (req, res) => {
+    try {
+        const { id } = req.params
+        if (!id) {
+            return res.status(500).json({ message: 'id is required' })
+        }
+        await project.findByIdAndDelete(id)
+        res.status(200).json({message:'deleted succesfull'})
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ message: 'error occured on deleteProject' })
+    }
+}
+module.exports = { addProject, getProject,deleteProject }
