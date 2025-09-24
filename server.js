@@ -9,7 +9,7 @@ dotenv.config()
 const app = express()
 const port = process.env.PORT
 app.use(cors({
-    origin: ['http://localhost:5174', 'http://localhost:5173','https://adamrifsal.vercel.app'],
+    origin: ['http://localhost:5174', 'http://localhost:5173','https://adamrifsal.vercel.app','https://adams-portfolio-admin.vercel.app'],
     credentials: true
 }))
 app.use(express.json())
