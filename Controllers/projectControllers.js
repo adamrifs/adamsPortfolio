@@ -41,46 +41,46 @@ const getProject = async (req, res) => {
     }
 }
 const editProject = async (req, res) => {
-    try {
-        const { id } = req.params
-        if (!id) {
-            return res.status(500).json({ message: 'id is required' })
-        }
-        const { name, description, link } = req.body
-        if (req.file) {
-            const imagePath = req.file.path;
+  try {
+    const { id } = req.params;
+    if (!id) return res.status(400).json({ message: 'id is required' });
 
-            // Upload new image to Cloudinary
-            const uploadResult = await cloudinary.uploader.upload(imagePath, {
-                folder: "projects"
-            });
+    const name = req.body?.name;
+    const description = req.body?.description;
+    const link = req.body?.link;
 
-            updateData.image = uploadResult.secure_url;
+    let updateData = { name, description, link };
 
-            // optional: delete old image from cloudinary
-            const oldProject = await project.findById(id);
-            if (oldProject && oldProject.image) {
-                // extract public_id from old image url
-                const publicId = oldProject.image.split("/").pop().split(".")[0];
-                await cloudinary.uploader.destroy(`projects/${publicId}`);
-            }
-        }
+    if (req.file) {
+      const imagePath = req.file.path;
 
-        const editedProject = await project.findByIdAndUpdate(id, {
-            name,
-            description,
-            link
-        }, { new: true })
-        await editedProject.save()
-        res.status(200).json({ message: 'projects edited', editedProject })
-    } catch (error) {
-        console.log(error)  
-        res.status(500).json({ message: 'error occured on editProject' })
+      // Upload new image to Cloudinary
+      const uploadResult = await cloudinary.uploader.upload(imagePath, {
+        folder: "projects"
+      });
+      updateData.image = uploadResult.secure_url;
+
+      // Optional: delete old image
+      const oldProject = await project.findById(id);
+      if (oldProject && oldProject.image) {
+        const publicId = oldProject.image.split("/").pop().split(".")[0];
+        await cloudinary.uploader.destroy(`projects/${publicId}`);
+      }
     }
-}
+
+    const editedProject = await project.findByIdAndUpdate(id, updateData, { new: true });
+    if (!editedProject) return res.status(404).json({ message: 'Project not found' });
+
+    res.status(200).json({ message: 'Project edited successfully', editedProject });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: 'Error occurred on editProject' });
+  }
+};
+
 const deleteProject = async (req, res) => {
     try {
-        const { id } = req.params                                                                                                                                                   
+        const { id } = req.params
         if (!id) {
             return res.status(500).json({ message: 'id is required' })
         }
